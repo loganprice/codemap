@@ -27,6 +27,10 @@
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loganprice/code-survey.git"
+  },
   "dependencies": {
     "tree-sitter-wasms": "^0.1.11",
     "web-tree-sitter": "^0.22.4",
