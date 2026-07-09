@@ -1,15 +1,9 @@
 import Parser from 'web-tree-sitter';
-import type { LanguageParser, ParseResult, ImportEntry, SymbolEntry, ParseOptions } from '../types.ts';
+import type { ParseResult, ImportEntry, SymbolEntry, ParseOptions } from '../types.ts';
 import { formatLocation, formatDocstring } from '../types.ts';
+import { BaseTreeSitterParser } from './base.ts';
 
 let isParserInitialized = false;
-
-async function ensureParserInit() {
-  if (!isParserInitialized) {
-    await Parser.init();
-    isParserInitialized = true;
-  }
-}
 
 function isJavaPublic(node: Parser.SyntaxNode): boolean {
   const modifiers = node.children.find(c => c.type === 'modifiers');
@@ -19,17 +13,7 @@ function isJavaPublic(node: Parser.SyntaxNode): boolean {
   return false;
 }
 
-export class JavaParser implements LanguageParser {
-  private parser!: Parser;
-  private lang!: Parser.Language;
-
-  async initialize(wasmPath: string): Promise<void> {
-    await ensureParserInit();
-    this.lang = await Parser.Language.load(wasmPath);
-    this.parser = new Parser();
-    this.parser.setLanguage(this.lang);
-  }
-
+export class JavaParser extends BaseTreeSitterParser {
   parse(code: string, options?: ParseOptions): ParseResult {
     const tree = this.parser.parse(code);
     const imports: ImportEntry[] = [];
@@ -106,6 +90,14 @@ export class JavaParser implements LanguageParser {
             type: 'method',
             location: formatLocation(node.startPosition.row + 1, node.endPosition.row + 1)
           };
+          if (options?.includeSignatures) {
+            const params = node.children.find(c => c.type === 'formal_parameters');
+            const idIndex = node.children.indexOf(idNode);
+            const returnTypeNode = idIndex > 0 ? node.children[idIndex - 1] : null;
+            if (params) {
+              item.signature = params.text + (returnTypeNode ? ': ' + returnTypeNode.text : '');
+            }
+          }
           const doc = getJavaDocstring(node);
           if (doc) {
             item.doc = doc;

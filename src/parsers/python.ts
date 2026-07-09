@@ -1,27 +1,9 @@
 import Parser from 'web-tree-sitter';
-import type { LanguageParser, ParseResult, ImportEntry, SymbolEntry, ParseOptions } from '../types.ts';
+import type { ParseResult, ImportEntry, SymbolEntry, ParseOptions } from '../types.ts';
 import { formatLocation, formatDocstring } from '../types.ts';
+import { BaseTreeSitterParser } from './base.ts';
 
-let isParserInitialized = false;
-
-async function ensureParserInit() {
-  if (!isParserInitialized) {
-    await Parser.init();
-    isParserInitialized = true;
-  }
-}
-
-export class PythonParser implements LanguageParser {
-  private parser!: Parser;
-  private lang!: Parser.Language;
-
-  async initialize(wasmPath: string): Promise<void> {
-    await ensureParserInit();
-    this.lang = await Parser.Language.load(wasmPath);
-    this.parser = new Parser();
-    this.parser.setLanguage(this.lang);
-  }
-
+export class PythonParser extends BaseTreeSitterParser {
   parse(code: string, options?: ParseOptions): ParseResult {
     const tree = this.parser.parse(code);
     const imports: ImportEntry[] = [];
@@ -126,6 +108,13 @@ export class PythonParser implements LanguageParser {
               type: 'function',
               location: formatLocation(node.startPosition.row + 1, node.endPosition.row + 1)
             };
+            if (options?.includeSignatures) {
+              const params = node.children.find(c => c.type === 'parameters');
+              const returnType = node.children.find(c => c.type === 'type');
+              if (params) {
+                item.signature = params.text + (returnType ? ' -> ' + returnType.text : '');
+              }
+            }
             const doc = getPythonDocstring(node);
             if (doc) {
               item.doc = doc;

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert';
-import { getWasmPath } from '../src/utils/wasm-loader.ts';
+import { getWasmPath } from '../src/wasm/wasm-loader.ts';
 import { TypeScriptParser } from '../src/parsers/typescript.ts';
 import { PythonParser } from '../src/parsers/python.ts';
 import { GoParser } from '../src/parsers/go.ts';
@@ -375,6 +375,20 @@ test('Parser: Rust - imports, exports, and internal symbols', async () => {
     }
 
     fn module_level_func() {}
+
+    /// An exported enum.
+    pub enum Status {
+        Active,
+        Inactive,
+    }
+
+    /// An exported trait.
+    pub trait Displayable {
+        fn display(&self);
+    }
+
+    /// An internal type alias.
+    type NameAlias = String;
   `;
 
   const result = parser.parse(mockCode, { includeDocs: true, includeInternalVars: true });
@@ -400,6 +414,16 @@ test('Parser: Rust - imports, exports, and internal symbols', async () => {
   assert.strictEqual(newMethod.type, 'method');
   assert.strictEqual(newMethod.doc, 'Creates a new MapContainer.');
 
+  const statusExport = result.exports.find(e => e.name === 'Status')!;
+  assert.ok(statusExport);
+  assert.strictEqual(statusExport.type, 'type');
+  assert.strictEqual(statusExport.doc, 'An exported enum.');
+
+  const displayableExport = result.exports.find(e => e.name === 'Displayable')!;
+  assert.ok(displayableExport);
+  assert.strictEqual(displayableExport.type, 'interface');
+  assert.strictEqual(displayableExport.doc, 'An exported trait.');
+
   // Assert Internal Symbols
   const helperMethod = result.symbols.find(s => s.name === 'helper')!;
   assert.ok(helperMethod);
@@ -408,6 +432,11 @@ test('Parser: Rust - imports, exports, and internal symbols', async () => {
   const moduleFunc = result.symbols.find(s => s.name === 'module_level_func')!;
   assert.ok(moduleFunc);
   assert.strictEqual(moduleFunc.type, 'function');
+
+  const typeAlias = result.symbols.find(s => s.name === 'NameAlias')!;
+  assert.ok(typeAlias);
+  assert.strictEqual(typeAlias.type, 'type');
+  assert.strictEqual(typeAlias.doc, 'An internal type alias.');
 
   // Assert Local Variable
   const localVal = result.symbols.find(s => s.name === 'initial_capacity')!;
@@ -472,6 +501,103 @@ test('Parser: JavaScript - imports, exports, and internal symbols', async () => 
   const localVal = result.symbols.find(s => s.name === 'multiplier')!;
   assert.ok(localVal);
   assert.strictEqual(localVal.type, 'variable');
+});
+
+test('Parser Signatures - verify parameter lists and return types for all languages', async () => {
+  // 1. TypeScript
+  const tsParser = new TypeScriptParser();
+  await tsParser.initialize(await getWasmPath('typescript'));
+  const tsCode = `
+    export function calculate(val: number, multiplier?: number): Promise<number> {
+      return val * (multiplier || 1);
+    }
+  `;
+  const tsResult = tsParser.parse(tsCode, { includeSignatures: true });
+  const tsFunc = tsResult.exports.find(e => e.name === 'calculate')!;
+  assert.ok(tsFunc);
+  assert.strictEqual(tsFunc.signature, '(val: number, multiplier?: number): Promise<number>');
+
+  // 2. Python
+  const pyParser = new PythonParser();
+  await pyParser.initialize(await getWasmPath('python'));
+  const pyCode = `
+def calculate(val: float, multiplier: float = 1.0) -> float:
+    return val * multiplier
+  `;
+  const pyResult = pyParser.parse(pyCode, { includeSignatures: true });
+  const pyFunc = pyResult.exports.find(e => e.name === 'calculate')!;
+  assert.ok(pyFunc);
+  assert.strictEqual(pyFunc.signature, '(val: float, multiplier: float = 1.0) -> float');
+
+  // 3. Go
+  const goParser = new GoParser();
+  await goParser.initialize(await getWasmPath('go'));
+  const goCode = `
+    package main
+    func Calculate(val int, multiplier int) (int, error) {
+      return val * multiplier, nil
+    }
+  `;
+  const goResult = goParser.parse(goCode, { includeSignatures: true });
+  const goFunc = goResult.exports.find(e => e.name === 'Calculate')!;
+  assert.ok(goFunc);
+  assert.strictEqual(goFunc.signature, '(val int, multiplier int) (int, error)');
+
+  // 4. Java
+  const javaParser = new JavaParser();
+  await javaParser.initialize(await getWasmPath('java'));
+  const javaCode = `
+    public class Calc {
+      public int calculate(int val, int multiplier) {
+        return val * multiplier;
+      }
+    }
+  `;
+  const javaResult = javaParser.parse(javaCode, { includeSignatures: true });
+  const javaMethod = javaResult.symbols.find(s => s.name === 'calculate')!;
+  assert.ok(javaMethod);
+  assert.strictEqual(javaMethod.signature, '(int val, int multiplier): int');
+
+  // 5. C#
+  const csParser = new CSharpParser();
+  await csParser.initialize(await getWasmPath('csharp'));
+  const csCode = `
+    public class Calc {
+      public Task<int> CalculateAsync(int val, int multiplier) {
+        return Task.FromResult(val * multiplier);
+      }
+    }
+  `;
+  const csResult = csParser.parse(csCode, { includeSignatures: true });
+  const csMethod = csResult.symbols.find(s => s.name === 'CalculateAsync')!;
+  assert.ok(csMethod);
+  assert.strictEqual(csMethod.signature, '(int val, int multiplier): Task<int>');
+
+  // 6. Rust
+  const rustParser = new RustParser();
+  await rustParser.initialize(await getWasmPath('rust'));
+  const rustCode = `
+    pub fn calculate(val: i32, multiplier: i32) -> Result<i32, String> {
+      Ok(val * multiplier)
+    }
+  `;
+  const rustResult = rustParser.parse(rustCode, { includeSignatures: true });
+  const rustFunc = rustResult.exports.find(e => e.name === 'calculate')!;
+  assert.ok(rustFunc);
+  assert.strictEqual(rustFunc.signature, '(val: i32, multiplier: i32) -> Result<i32, String>');
+
+  // 7. JavaScript
+  const jsParser = new JavaScriptParser();
+  await jsParser.initialize(await getWasmPath('javascript'));
+  const jsCode = `
+    function calculate(val, multiplier) {
+      return val * multiplier;
+    }
+  `;
+  const jsResult = jsParser.parse(jsCode, { includeSignatures: true });
+  const jsFunc = jsResult.symbols.find(s => s.name === 'calculate')!;
+  assert.ok(jsFunc);
+  assert.strictEqual(jsFunc.signature, '(val, multiplier)');
 });
 
 

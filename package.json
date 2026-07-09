@@ -1,17 +1,25 @@
 {
-  "name": "@loganprice/codemap",
+  "name": "code-survey",
   "version": "1.0.0",
-  "description": "Deterministic codebase mapping tool for coding agents",
+  "description": "Deterministic codebase surveying tool for coding agents",
   "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "codemap": "./bin/codemap.ts"
+    "code-survey": "./dist/bin/code-survey.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "test": "deno test --allow-read --allow-write --allow-sys --allow-env tests/",
-    "test:node": "node --experimental-strip-types --test tests/**/*.test.ts"
+    "test": "deno test --allow-read --allow-write --allow-sys --allow-env --allow-run --allow-net tests/",
+    "test:node": "node --experimental-strip-types --test tests/**/*.test.ts",
+    "build": "rm -rf dist && npx tsc --declaration --emitDeclarationOnly --outDir dist --noEmit false && mv dist/src/* dist/ && rm -rf dist/src dist/bin && bun build src/index.ts --outfile dist/index.js --target node --external web-tree-sitter --external tree-sitter-wasms --external yaml && bun build bin/code-survey.ts --outfile dist/bin/code-survey.js --target node --external web-tree-sitter --external tree-sitter-wasms --external yaml",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
+    "code-survey",
     "codemap",
     "ast",
     "parser",

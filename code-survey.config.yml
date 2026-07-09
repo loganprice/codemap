@@ -1,0 +1,20 @@
+surveys:
+  - output: examples/code-survey.json
+    format: json
+    includeSignatures: true
+  - output: examples/code-survey.yaml
+    format: yaml
+    includeSignatures: true
+  - output: examples/code-survey.md
+    format: markdown
+    includeSignatures: true
+  - output: examples/code-survey.mmd
+    format: mermaid
+  - output: examples/survey-split-json
+    split: true
+    format: json
+    includeSignatures: true
+  - output: examples/survey-split-md
+    split: true
+    format: markdown
+    includeSignatures: true

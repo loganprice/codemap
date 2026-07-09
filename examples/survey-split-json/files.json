@@ -1,0 +1,1184 @@
+{
+  "files": {
+    "src/index.ts": {
+      "exports": [
+        {
+          "location": "Ln 22-37",
+          "name": "CodeSurveyOptions",
+          "type": "type"
+        },
+        {
+          "location": "Ln 62-368",
+          "name": "createCodeSurvey",
+          "signature": "(options: CodeSurveyOptions): Promise<CodeSurveyResult>",
+          "type": "function"
+        }
+      ],
+      "hash": "a5b15e218895e1c803187726c06d124a11d186a0af754486b736a5e678230c6e",
+      "imports": [
+        {
+          "source": "./parser.ts",
+          "symbols": [
+            "CodebaseParser",
+            "parsePackageDependencies"
+          ]
+        },
+        {
+          "source": "./resolver.ts",
+          "symbols": [
+            "resolveImports"
+          ]
+        },
+        {
+          "source": "./scanner.ts",
+          "symbols": [
+            "scanDirectory"
+          ]
+        },
+        {
+          "source": "./types.ts",
+          "symbols": [
+            "CodeSurveyResult",
+            "CodeSurveySchema",
+            "FileEntry",
+            "NamespaceEntry",
+            "SymbolEntry"
+          ]
+        },
+        {
+          "source": "./writer.ts",
+          "symbols": [
+            "generateDependenciesMarkdown",
+            "generateDeterministicJson",
+            "generateDeterministicMarkdown",
+            "generateDeterministicMermaid",
+            "generateDeterministicYaml",
+            "generateFilesMarkdown",
+            "generateLinksMarkdown",
+            "generateNamespacesMarkdown",
+            "generateProjectMarkdown"
+          ]
+        },
+        {
+          "source": "node:child_process",
+          "symbols": [
+            "execSync"
+          ]
+        },
+        {
+          "source": "node:crypto",
+          "symbols": [
+            "crypto"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "symbols": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:os",
+          "symbols": [
+            "os"
+          ]
+        },
+        {
+          "source": "node:path",
+          "symbols": [
+            "path"
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "location": "Ln 39-60",
+          "name": "getGitChangedFiles",
+          "signature": "(rootDir: string, diffTarget: string | boolean): Set<string>",
+          "type": "function"
+        }
+      ]
+    },
+    "src/parser.ts": {
+      "exports": [
+        {
+          "location": "Ln 150-194",
+          "name": "CodebaseParser",
+          "type": "class"
+        },
+        {
+          "location": "Ln 15-146",
+          "name": "parsePackageDependencies",
+          "signature": "(dir: string): PackageDependencies",
+          "type": "function"
+        }
+      ],
+      "hash": "d5608f905392101a6f30da95366a247f13db0e0ba9f0fa5c0df2e6080fc9b70b",
+      "imports": [
+        {
+          "source": "./parsers/csharp.ts",
+          "symbols": [
+            "CSharpParser"
+          ]
+        },
+        {
+          "source": "./parsers/go.ts",
+          "symbols": [
+            "GoParser"
+          ]
+        },
+        {
+          "source": "./parsers/java.ts",
+          "symbols": [
+            "JavaParser"
+          ]
+        },
+        {
+          "source": "./parsers/javascript.ts",
+          "symbols": [
+            "JavaScriptParser"
+          ]
+        },
+        {
+          "source": "./parsers/python.ts",
+          "symbols": [
+            "PythonParser"
+          ]
+        },
+        {
+          "source": "./parsers/rust.ts",
+          "symbols": [
+            "RustParser"
+          ]
+        },
+        {
+          "source": "./parsers/typescript.ts",
+          "symbols": [
+            "TypeScriptParser"
+          ]
+        },
+        {
+          "source": "./types.ts",
+          "symbols": [
+            "LanguageParser",
+            "PackageDependencies",
+            "ParseOptions",
+            "ParseResult"
+          ]
+        },
+        {
+          "source": "./utils/wasm-loader.ts",
+          "symbols": [
+            "getWasmPath"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "symbols": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:path",
+          "symbols": [
+            "path"
+          ]
+        }
+      ],
+      "symbols": []
+    },
+    "src/parsers/csharp.ts": {
+      "exports": [
+        {
+          "location": "Ln 19-144",
+          "name": "CSharpParser",
+          "type": "class"
+        }
+      ],
+      "hash": "5529207c240ced31f291a7bd71c4660a1933a41f4415867ee3f16bd472d1f09a",
+      "imports": [
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "ImportEntry",
+            "LanguageParser",
+            "ParseOptions",
+            "ParseResult",
+            "SymbolEntry"
+          ]
+        },
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "formatDocstring",
+            "formatLocation"
+          ]
+        },
+        {
+          "source": "web-tree-sitter",
+          "symbols": [
+            "Parser"
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "location": "Ln 7-12",
+          "name": "ensureParserInit",
+          "signature": "()",
+          "type": "function"
+        },
+        {
+          "location": "Ln 14-17",
+          "name": "isCSharpPublic",
+          "signature": "(node: Parser.SyntaxNode): boolean",
+          "type": "function"
+        },
+        {
+          "location": "Ln 5",
+          "name": "isParserInitialized",
+          "type": "variable"
+        }
+      ]
+    },
+    "src/parsers/go.ts": {
+      "exports": [
+        {
+          "location": "Ln 21-162",
+          "name": "GoParser",
+          "type": "class"
+        }
+      ],
+      "hash": "34e6b8ee8a576afc6eb9df2a3c77fd2097502ef3f7a7ac0c59b882dd5614bf47",
+      "imports": [
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "ImportEntry",
+            "LanguageParser",
+            "ParseOptions",
+            "ParseResult",
+            "SymbolEntry"
+          ]
+        },
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "formatDocstring",
+            "formatLocation"
+          ]
+        },
+        {
+          "source": "web-tree-sitter",
+          "symbols": [
+            "Parser"
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "location": "Ln 7-12",
+          "name": "ensureParserInit",
+          "signature": "()",
+          "type": "function"
+        },
+        {
+          "location": "Ln 14-19",
+          "name": "isGoExported",
+          "signature": "(name: string): boolean",
+          "type": "function"
+        },
+        {
+          "location": "Ln 5",
+          "name": "isParserInitialized",
+          "type": "variable"
+        }
+      ]
+    },
+    "src/parsers/java.ts": {
+      "exports": [
+        {
+          "location": "Ln 22-134",
+          "name": "JavaParser",
+          "type": "class"
+        }
+      ],
+      "hash": "34dc5d598bcadaf2046e7d4978c4f71ecb3d88e800ff247aba310f46c600ca24",
+      "imports": [
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "ImportEntry",
+            "LanguageParser",
+            "ParseOptions",
+            "ParseResult",
+            "SymbolEntry"
+          ]
+        },
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "formatDocstring",
+            "formatLocation"
+          ]
+        },
+        {
+          "source": "web-tree-sitter",
+          "symbols": [
+            "Parser"
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "location": "Ln 7-12",
+          "name": "ensureParserInit",
+          "signature": "()",
+          "type": "function"
+        },
+        {
+          "location": "Ln 14-20",
+          "name": "isJavaPublic",
+          "signature": "(node: Parser.SyntaxNode): boolean",
+          "type": "function"
+        },
+        {
+          "location": "Ln 5",
+          "name": "isParserInitialized",
+          "type": "variable"
+        }
+      ]
+    },
+    "src/parsers/javascript.ts": {
+      "exports": [
+        {
+          "location": "Ln 14-174",
+          "name": "JavaScriptParser",
+          "type": "class"
+        }
+      ],
+      "hash": "f58f254e21ad5172e959cd0a4abfec56fa39c6102c768e6d94e12632626a9713",
+      "imports": [
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "ImportEntry",
+            "LanguageParser",
+            "ParseOptions",
+            "ParseResult",
+            "SymbolEntry"
+          ]
+        },
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "formatDocstring",
+            "formatLocation"
+          ]
+        },
+        {
+          "source": "web-tree-sitter",
+          "symbols": [
+            "Parser"
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "location": "Ln 7-12",
+          "name": "ensureParserInit",
+          "signature": "()",
+          "type": "function"
+        },
+        {
+          "location": "Ln 5",
+          "name": "isParserInitialized",
+          "type": "variable"
+        }
+      ]
+    },
+    "src/parsers/python.ts": {
+      "exports": [
+        {
+          "location": "Ln 14-155",
+          "name": "PythonParser",
+          "type": "class"
+        }
+      ],
+      "hash": "40f9436b88269c51a3c6e53e819ffd1c5af6dfd56f32086ef223cbb2e810d54c",
+      "imports": [
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "ImportEntry",
+            "LanguageParser",
+            "ParseOptions",
+            "ParseResult",
+            "SymbolEntry"
+          ]
+        },
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "formatDocstring",
+            "formatLocation"
+          ]
+        },
+        {
+          "source": "web-tree-sitter",
+          "symbols": [
+            "Parser"
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "location": "Ln 7-12",
+          "name": "ensureParserInit",
+          "signature": "()",
+          "type": "function"
+        },
+        {
+          "location": "Ln 5",
+          "name": "isParserInitialized",
+          "type": "variable"
+        }
+      ]
+    },
+    "src/parsers/rust.ts": {
+      "exports": [
+        {
+          "location": "Ln 14-183",
+          "name": "RustParser",
+          "type": "class"
+        }
+      ],
+      "hash": "ac9f16b2a4ca7d829f088aacd04c75c02e429e583af1db34dfee11edd9daa153",
+      "imports": [
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "ImportEntry",
+            "LanguageParser",
+            "ParseOptions",
+            "ParseResult",
+            "SymbolEntry"
+          ]
+        },
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "formatDocstring",
+            "formatLocation"
+          ]
+        },
+        {
+          "source": "web-tree-sitter",
+          "symbols": [
+            "Parser"
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "location": "Ln 7-12",
+          "name": "ensureParserInit",
+          "signature": "()",
+          "type": "function"
+        },
+        {
+          "location": "Ln 5",
+          "name": "isParserInitialized",
+          "type": "variable"
+        }
+      ]
+    },
+    "src/parsers/typescript.ts": {
+      "exports": [
+        {
+          "location": "Ln 14-186",
+          "name": "TypeScriptParser",
+          "type": "class"
+        }
+      ],
+      "hash": "4f1d7bfae74aadef9757080c354cbd48e354965b157772f31b55fc302c8dcc34",
+      "imports": [
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "ImportEntry",
+            "LanguageParser",
+            "ParseOptions",
+            "ParseResult",
+            "SymbolEntry"
+          ]
+        },
+        {
+          "source": "../types.ts",
+          "symbols": [
+            "formatDocstring",
+            "formatLocation"
+          ]
+        },
+        {
+          "source": "web-tree-sitter",
+          "symbols": [
+            "Parser"
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "location": "Ln 7-12",
+          "name": "ensureParserInit",
+          "signature": "()",
+          "type": "function"
+        },
+        {
+          "location": "Ln 5",
+          "name": "isParserInitialized",
+          "type": "variable"
+        }
+      ]
+    },
+    "src/resolver.ts": {
+      "exports": [
+        {
+          "location": "Ln 4-184",
+          "name": "resolveImports",
+          "signature": "(\n  files: Record<string, FileEntry>,\n  namespaces: Record<string, NamespaceEntry>,\n  packageDeps: PackageDependencies\n): {\n  externalImports: Record<string, string[]>;\n  internalLinks: Record<string, string[]>;\n}",
+          "type": "function"
+        }
+      ],
+      "hash": "26de28af071ddba07dbb1d441293914411ad319c7ef590d315b1f28480774000",
+      "imports": [
+        {
+          "source": "./types.ts",
+          "symbols": [
+            "FileEntry",
+            "NamespaceEntry",
+            "PackageDependencies"
+          ]
+        },
+        {
+          "source": "node:path",
+          "symbols": [
+            "path"
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "location": "Ln 45-53",
+          "name": "isExternal",
+          "signature": "(source: string): boolean",
+          "type": "function"
+        }
+      ]
+    },
+    "src/scanner.ts": {
+      "exports": [
+        {
+          "location": "Ln 24-27",
+          "name": "calculateHash",
+          "signature": "(filePath: string): string",
+          "type": "function"
+        },
+        {
+          "location": "Ln 29-72",
+          "name": "scanDirectory",
+          "signature": "(\n  rootDir: string,\n  customExcludes: string[] = [],\n  maxDepth?: number\n): ScannedFile[]",
+          "type": "function"
+        },
+        {
+          "location": "Ln 5-9",
+          "name": "ScannedFile",
+          "type": "type"
+        }
+      ],
+      "hash": "eab5916a53d5e8feff3fd5e7a9c59afaddecefcbdc27646890e49c2c6c04ffe7",
+      "imports": [
+        {
+          "source": "node:crypto",
+          "symbols": [
+            "crypto"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "symbols": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:path",
+          "symbols": [
+            "path"
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "location": "Ln 11-22",
+          "name": "DEFAULT_IGNORED_DIRS",
+          "type": "variable"
+        },
+        {
+          "location": "Ln 38-68",
+          "name": "walk",
+          "signature": "(currentDir: string, currentDepth = 0)",
+          "type": "function"
+        }
+      ]
+    },
+    "src/types.ts": {
+      "exports": [
+        {
+          "location": "Ln 93-104",
+          "name": "CodeSurveyResult",
+          "type": "type"
+        },
+        {
+          "location": "Ln 63-72",
+          "name": "CodeSurveySchema",
+          "type": "type"
+        },
+        {
+          "location": "Ln 51-56",
+          "name": "FileEntry",
+          "type": "type"
+        },
+        {
+          "location": "Ln 32-49",
+          "name": "formatDocstring",
+          "signature": "(text: string): string",
+          "type": "function"
+        },
+        {
+          "location": "Ln 28-30",
+          "name": "formatLocation",
+          "signature": "(start: number, end: number): string",
+          "type": "function"
+        },
+        {
+          "location": "Ln 15-18",
+          "name": "ImportEntry",
+          "type": "type"
+        },
+        {
+          "location": "Ln 88-91",
+          "name": "LanguageParser",
+          "type": "type"
+        },
+        {
+          "location": "Ln 58-61",
+          "name": "NamespaceEntry",
+          "type": "type"
+        },
+        {
+          "location": "Ln 7-13",
+          "name": "PackageDependencies",
+          "type": "type"
+        },
+        {
+          "location": "Ln 74-79",
+          "name": "ParseOptions",
+          "type": "type"
+        },
+        {
+          "location": "Ln 81-86",
+          "name": "ParseResult",
+          "type": "type"
+        },
+        {
+          "location": "Ln 1-5",
+          "name": "ProjectMetadata",
+          "type": "type"
+        },
+        {
+          "location": "Ln 20-26",
+          "name": "SymbolEntry",
+          "type": "type"
+        }
+      ],
+      "hash": "b44ac3cd1f0df850e3c4727f146d1773b7605034b1efe6dd485a0cd2f9bf1d5b",
+      "imports": [],
+      "symbols": []
+    },
+    "src/utils/wasm-loader.ts": {
+      "exports": [
+        {
+          "location": "Ln 18-79",
+          "name": "getWasmPath",
+          "signature": "(language: string): Promise<string>",
+          "type": "function"
+        }
+      ],
+      "hash": "3cbcff473233d1550543b55cf97168265a07716db39bffff32663b008d6edb76",
+      "imports": [
+        {
+          "source": "node:fs",
+          "symbols": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:os",
+          "symbols": [
+            "os"
+          ]
+        },
+        {
+          "source": "node:path",
+          "symbols": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:url",
+          "symbols": [
+            "fileURLToPath"
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "location": "Ln 16",
+          "name": "CDN_BASE_URL",
+          "type": "variable"
+        },
+        {
+          "location": "Ln 6-14",
+          "name": "WASM_FILE_MAP",
+          "type": "variable"
+        }
+      ]
+    },
+    "src/writer.ts": {
+      "exports": [
+        {
+          "location": "Ln 132-146",
+          "name": "generateDependenciesMarkdown",
+          "signature": "(data: CodeSurveySchema): string",
+          "type": "function"
+        },
+        {
+          "location": "Ln 77-80",
+          "name": "generateDeterministicJson",
+          "signature": "(data: CodeSurveySchema): string",
+          "type": "function"
+        },
+        {
+          "location": "Ln 223-264",
+          "name": "generateDeterministicMarkdown",
+          "signature": "(data: CodeSurveySchema, options?: { includeToc?: boolean }): string",
+          "type": "function"
+        },
+        {
+          "location": "Ln 87-126",
+          "name": "generateDeterministicMermaid",
+          "signature": "(data: CodeSurveySchema): string",
+          "type": "function"
+        },
+        {
+          "location": "Ln 82-85",
+          "name": "generateDeterministicYaml",
+          "signature": "(data: CodeSurveySchema): string",
+          "type": "function"
+        },
+        {
+          "location": "Ln 148-193",
+          "name": "generateFilesMarkdown",
+          "signature": "(data: CodeSurveySchema, options?: { includeToc?: boolean }): string",
+          "type": "function"
+        },
+        {
+          "location": "Ln 210-221",
+          "name": "generateLinksMarkdown",
+          "signature": "(data: CodeSurveySchema): string",
+          "type": "function"
+        },
+        {
+          "location": "Ln 195-208",
+          "name": "generateNamespacesMarkdown",
+          "signature": "(data: CodeSurveySchema): string",
+          "type": "function"
+        },
+        {
+          "location": "Ln 128-130",
+          "name": "generateProjectMarkdown",
+          "signature": "(data: CodeSurveySchema): string",
+          "type": "function"
+        },
+        {
+          "location": "Ln 22-75",
+          "name": "sortCodeSurveyData",
+          "signature": "(data: CodeSurveySchema): CodeSurveySchema",
+          "type": "function"
+        }
+      ],
+      "hash": "bd4325817cd37eb6afa18da39897001fc6f7691d74bb7900e6a56aecac4f6768",
+      "imports": [
+        {
+          "source": "./types.ts",
+          "symbols": [
+            "CodeSurveySchema",
+            "FileEntry",
+            "NamespaceEntry"
+          ]
+        },
+        {
+          "source": "yaml",
+          "symbols": [
+            "stringify"
+          ]
+        }
+      ],
+      "symbols": [
+        {
+          "location": "Ln 5-20",
+          "name": "sortObjectKeys",
+          "signature": "(obj: any): any",
+          "type": "function"
+        }
+      ]
+    },
+    "tests/integration.test.ts": {
+      "exports": [],
+      "hash": "eb6d5ddadc2a859cd5332c172fc762e634d7bc72d41a920245fd106508aeef74",
+      "imports": [
+        {
+          "source": "../src/index.ts",
+          "symbols": [
+            "createCodeSurvey"
+          ]
+        },
+        {
+          "source": "node:assert",
+          "symbols": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:child_process",
+          "symbols": [
+            "execSync"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "symbols": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:path",
+          "symbols": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:test",
+          "symbols": [
+            "test"
+          ]
+        },
+        {
+          "source": "yaml",
+          "symbols": [
+            "parse"
+          ]
+        }
+      ],
+      "symbols": []
+    },
+    "tests/package-parser.test.ts": {
+      "exports": [],
+      "hash": "97dd9e8e959f7abbdb7953bfbbef7743b4dec40d3f9a6391ba13cfbcb3ffae17",
+      "imports": [
+        {
+          "source": "../src/parser.ts",
+          "symbols": [
+            "parsePackageDependencies"
+          ]
+        },
+        {
+          "source": "node:assert",
+          "symbols": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "symbols": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:path",
+          "symbols": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:test",
+          "symbols": [
+            "test"
+          ]
+        }
+      ],
+      "symbols": []
+    },
+    "tests/parsers.test.ts": {
+      "exports": [],
+      "hash": "a307e980d58c65490fa60cff169792757f225e89737234fa8d47e84399ab12b6",
+      "imports": [
+        {
+          "source": "../src/parsers/csharp.ts",
+          "symbols": [
+            "CSharpParser"
+          ]
+        },
+        {
+          "source": "../src/parsers/go.ts",
+          "symbols": [
+            "GoParser"
+          ]
+        },
+        {
+          "source": "../src/parsers/java.ts",
+          "symbols": [
+            "JavaParser"
+          ]
+        },
+        {
+          "source": "../src/parsers/javascript.ts",
+          "symbols": [
+            "JavaScriptParser"
+          ]
+        },
+        {
+          "source": "../src/parsers/python.ts",
+          "symbols": [
+            "PythonParser"
+          ]
+        },
+        {
+          "source": "../src/parsers/rust.ts",
+          "symbols": [
+            "RustParser"
+          ]
+        },
+        {
+          "source": "../src/parsers/typescript.ts",
+          "symbols": [
+            "TypeScriptParser"
+          ]
+        },
+        {
+          "source": "../src/utils/wasm-loader.ts",
+          "symbols": [
+            "getWasmPath"
+          ]
+        },
+        {
+          "source": "node:assert",
+          "symbols": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:test",
+          "symbols": [
+            "test"
+          ]
+        }
+      ],
+      "symbols": []
+    },
+    "tests/remote.test.ts": {
+      "exports": [],
+      "hash": "3fa2dd8b4ec6e0a2589b197952791785716776053e21c4bb1438ee7551491948",
+      "imports": [
+        {
+          "source": "../src/index.ts",
+          "symbols": [
+            "createCodeSurvey"
+          ]
+        },
+        {
+          "source": "node:assert",
+          "symbols": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "symbols": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:os",
+          "symbols": [
+            "os"
+          ]
+        },
+        {
+          "source": "node:path",
+          "symbols": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:test",
+          "symbols": [
+            "test"
+          ]
+        }
+      ],
+      "symbols": []
+    },
+    "tests/resolver.test.ts": {
+      "exports": [],
+      "hash": "65cf32a0902937498da9c0f1626e59d89b7021dcf57bef20caf9fba7389e1964",
+      "imports": [
+        {
+          "source": "../src/resolver.ts",
+          "symbols": [
+            "resolveImports"
+          ]
+        },
+        {
+          "source": "../src/types.ts",
+          "symbols": [
+            "FileEntry",
+            "NamespaceEntry",
+            "PackageDependencies"
+          ]
+        },
+        {
+          "source": "node:assert",
+          "symbols": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:test",
+          "symbols": [
+            "test"
+          ]
+        }
+      ],
+      "symbols": []
+    },
+    "tests/scanner.test.ts": {
+      "exports": [],
+      "hash": "c097e41b86674c525597bf95bc0ad98ae93bd5416599b5df1dbd49a0c2f658f5",
+      "imports": [
+        {
+          "source": "../src/scanner.ts",
+          "symbols": [
+            "scanDirectory"
+          ]
+        },
+        {
+          "source": "node:assert",
+          "symbols": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "symbols": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:path",
+          "symbols": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:test",
+          "symbols": [
+            "test"
+          ]
+        }
+      ],
+      "symbols": []
+    },
+    "tests/wasm-loader.test.ts": {
+      "exports": [],
+      "hash": "49c0d02dbe091c5866a42bd6b6890020496df21bd47b4304101f66493b8523a4",
+      "imports": [
+        {
+          "source": "../src/utils/wasm-loader.ts",
+          "symbols": [
+            "getWasmPath"
+          ]
+        },
+        {
+          "source": "node:assert",
+          "symbols": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:fs",
+          "symbols": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:test",
+          "symbols": [
+            "test"
+          ]
+        }
+      ],
+      "symbols": []
+    },
+    "tests/writer.test.ts": {
+      "exports": [],
+      "hash": "92b89ad69d24e1cd20d45ab3f699893ccfac601826772d58dda4b2eb0e816b69",
+      "imports": [
+        {
+          "source": "../src/types.ts",
+          "symbols": [
+            "CodeSurveySchema"
+          ]
+        },
+        {
+          "source": "../src/writer.ts",
+          "symbols": [
+            "generateDeterministicJson",
+            "generateDeterministicMarkdown",
+            "generateDeterministicMermaid",
+            "generateDeterministicYaml"
+          ]
+        },
+        {
+          "source": "node:assert",
+          "symbols": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:test",
+          "symbols": [
+            "test"
+          ]
+        },
+        {
+          "source": "yaml",
+          "symbols": [
+            "parse"
+          ]
+        }
+      ],
+      "symbols": []
+    }
+  }
+}

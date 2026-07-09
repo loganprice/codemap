@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
-import { getWasmPath } from '../src/utils/wasm-loader.ts';
+import { getWasmPath } from '../src/wasm/wasm-loader.ts';
 
 test('WASM Loader - resolve valid wasm paths', async () => {
   const languages = ['typescript', 'javascript', 'python', 'go', 'java', 'csharp'];

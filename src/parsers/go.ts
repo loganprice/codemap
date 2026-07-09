@@ -1,15 +1,9 @@
 import Parser from 'web-tree-sitter';
-import type { LanguageParser, ParseResult, ImportEntry, SymbolEntry, ParseOptions } from '../types.ts';
+import type { ParseResult, ImportEntry, SymbolEntry, ParseOptions } from '../types.ts';
 import { formatLocation, formatDocstring } from '../types.ts';
+import { BaseTreeSitterParser } from './base.ts';
 
 let isParserInitialized = false;
-
-async function ensureParserInit() {
-  if (!isParserInitialized) {
-    await Parser.init();
-    isParserInitialized = true;
-  }
-}
 
 function isGoExported(name: string): boolean {
   if (name.length === 0) return false;
@@ -18,17 +12,7 @@ function isGoExported(name: string): boolean {
   return firstChar === firstChar.toUpperCase() && firstChar !== firstChar.toLowerCase();
 }
 
-export class GoParser implements LanguageParser {
-  private parser!: Parser;
-  private lang!: Parser.Language;
-
-  async initialize(wasmPath: string): Promise<void> {
-    await ensureParserInit();
-    this.lang = await Parser.Language.load(wasmPath);
-    this.parser = new Parser();
-    this.parser.setLanguage(this.lang);
-  }
-
+export class GoParser extends BaseTreeSitterParser {
   parse(code: string, options?: ParseOptions): ParseResult {
     const tree = this.parser.parse(code);
     const imports: ImportEntry[] = [];
@@ -78,12 +62,15 @@ export class GoParser implements LanguageParser {
           return undefined;
         };
 
-        const addGoSymbol = (name: string, type: SymbolEntry['type'], startNode: Parser.SyntaxNode) => {
+        const addGoSymbol = (name: string, type: SymbolEntry['type'], startNode: Parser.SyntaxNode, signature?: string) => {
           const item: SymbolEntry = {
             name,
             type,
             location: formatLocation(startNode.startPosition.row + 1, startNode.endPosition.row + 1)
           };
+          if (signature) {
+            item.signature = signature;
+          }
           const doc = getGoDocstring(startNode);
           if (doc) {
             item.doc = doc;
@@ -112,7 +99,24 @@ export class GoParser implements LanguageParser {
         if (node.type === 'function_declaration') {
           const idNode = node.children.find(c => c.type === 'identifier');
           if (idNode) {
-            addGoSymbol(idNode.text, 'function', node);
+            let signature: string | undefined;
+            if (options?.includeSignatures) {
+              const params = node.children.find(c => c.type === 'parameter_list');
+              if (params) {
+                const paramIndex = node.children.indexOf(params);
+                const blockIndex = node.children.findIndex(c => c.type === 'block');
+                let returnType = '';
+                if (paramIndex !== -1 && blockIndex !== -1 && blockIndex > paramIndex + 1) {
+                  returnType = node.children
+                    .slice(paramIndex + 1, blockIndex)
+                    .map(c => c.text)
+                    .join(' ')
+                    .trim();
+                }
+                signature = params.text + (returnType ? ' ' + returnType : '');
+              }
+            }
+            addGoSymbol(idNode.text, 'function', node, signature);
           }
         }
 

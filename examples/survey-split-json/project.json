@@ -1,0 +1,10 @@
+{
+  "project": {
+    "languages": [
+      "typescript"
+    ],
+    "name": "bold-hypatia",
+    "root": "."
+  },
+  "version": "1.0.0"
+}

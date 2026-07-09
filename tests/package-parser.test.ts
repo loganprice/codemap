@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { parsePackageDependencies } from '../src/parser.ts';
+import { parsePackageDependencies } from '../src/package-parser.ts';
 
 test('Dependency Parser - parses all standard package dependency formats', async () => {
   const tempDir = path.resolve('./temp_dep_test');

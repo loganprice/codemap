@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "CodemapSchema",
+  "title": "CodeSurveySchema",
   "type": "object",
   "properties": {
     "version": { "type": "string" },
@@ -100,6 +100,9 @@
           "type": "string"
         },
         "doc": {
+          "type": "string"
+        },
+        "signature": {
           "type": "string"
         }
       },

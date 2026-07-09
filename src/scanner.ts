@@ -10,6 +10,7 @@ export interface ScannedFile {
 
 const DEFAULT_IGNORED_DIRS = new Set([
   '.git',
+  '.code-survey',
   'node_modules',
   '.venv',
   'venv',

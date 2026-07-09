@@ -22,6 +22,7 @@ export interface SymbolEntry {
   type: 'class' | 'interface' | 'struct' | 'method' | 'function' | 'variable' | 'type';
   location: string;
   doc?: string;
+  signature?: string;
 }
 
 export function formatLocation(start: number, end: number): string {
@@ -59,7 +60,7 @@ export interface NamespaceEntry {
   exports: string[];
 }
 
-export interface CodemapSchema {
+export interface CodeSurveySchema {
   version: string;
   $schema?: string;
   project: ProjectMetadata;
@@ -74,6 +75,7 @@ export interface ParseOptions {
   includeInternalVars?: boolean;
   includeDocs?: boolean;
   symbolsFilter?: string[];
+  includeSignatures?: boolean;
 }
 
 export interface ParseResult {
@@ -88,7 +90,7 @@ export interface LanguageParser {
   parse(code: string, options?: ParseOptions): ParseResult;
 }
 
-export interface CodemapResult {
+export interface CodeSurveyResult {
   filesCount: number;
   symbolsCount: {
     class: number;
@@ -99,6 +101,7 @@ export interface CodemapResult {
     variable: number;
     type: number;
   };
+  data: CodeSurveySchema;
 }
 
 

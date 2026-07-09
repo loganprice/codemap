@@ -1,27 +1,9 @@
 import Parser from 'web-tree-sitter';
-import type { LanguageParser, ParseResult, ImportEntry, SymbolEntry, ParseOptions } from '../types.ts';
+import type { ParseResult, ImportEntry, SymbolEntry, ParseOptions } from '../types.ts';
 import { formatLocation, formatDocstring } from '../types.ts';
+import { BaseTreeSitterParser } from './base.ts';
 
-let isParserInitialized = false;
-
-async function ensureParserInit() {
-  if (!isParserInitialized) {
-    await Parser.init();
-    isParserInitialized = true;
-  }
-}
-
-export class JavaScriptParser implements LanguageParser {
-  private parser!: Parser;
-  private lang!: Parser.Language;
-
-  async initialize(wasmPath: string): Promise<void> {
-    await ensureParserInit();
-    this.lang = await Parser.Language.load(wasmPath);
-    this.parser = new Parser();
-    this.parser.setLanguage(this.lang);
-  }
-
+export class JavaScriptParser extends BaseTreeSitterParser {
   parse(code: string, options?: ParseOptions): ParseResult {
     const tree = this.parser.parse(code);
     const imports: ImportEntry[] = [];
@@ -93,12 +75,15 @@ export class JavaScriptParser implements LanguageParser {
       };
 
       // Helper to add symbol
-      const addSymbol = (name: string, type: SymbolEntry['type'], startNode: Parser.SyntaxNode) => {
+      const addSymbol = (name: string, type: SymbolEntry['type'], startNode: Parser.SyntaxNode, signature?: string) => {
         const item: SymbolEntry = {
           name,
           type,
           location: formatLocation(startNode.startPosition.row + 1, startNode.endPosition.row + 1)
         };
+        if (signature) {
+          item.signature = signature;
+        }
         const doc = getDocstring(startNode);
         if (doc) {
           item.doc = doc;
@@ -122,7 +107,14 @@ export class JavaScriptParser implements LanguageParser {
       if (node.type === 'function_declaration' || node.type === 'generator_function_declaration') {
         const idNode = node.children.find(c => c.type === 'identifier');
         if (idNode) {
-          addSymbol(idNode.text, 'function', node);
+          let signature: string | undefined;
+          if (options?.includeSignatures) {
+            const params = node.children.find(c => c.type === 'formal_parameters');
+            if (params) {
+              signature = params.text;
+            }
+          }
+          addSymbol(idNode.text, 'function', node, signature);
         }
       }
 

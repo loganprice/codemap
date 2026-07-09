@@ -1,27 +1,9 @@
 import Parser from 'web-tree-sitter';
-import type { LanguageParser, ParseResult, ImportEntry, SymbolEntry, ParseOptions } from '../types.ts';
+import type { ParseResult, ImportEntry, SymbolEntry, ParseOptions } from '../types.ts';
 import { formatLocation, formatDocstring } from '../types.ts';
+import { BaseTreeSitterParser } from './base.ts';
 
-let isParserInitialized = false;
-
-async function ensureParserInit() {
-  if (!isParserInitialized) {
-    await Parser.init();
-    isParserInitialized = true;
-  }
-}
-
-export class RustParser implements LanguageParser {
-  private parser!: Parser;
-  private lang!: Parser.Language;
-
-  async initialize(wasmPath: string): Promise<void> {
-    await ensureParserInit();
-    this.lang = await Parser.Language.load(wasmPath);
-    this.parser = new Parser();
-    this.parser.setLanguage(this.lang);
-  }
-
+export class RustParser extends BaseTreeSitterParser {
   parse(code: string, options?: ParseOptions): ParseResult {
     const tree = this.parser.parse(code);
     const imports: ImportEntry[] = [];
@@ -79,12 +61,15 @@ export class RustParser implements LanguageParser {
       // 2. Definitions: Struct, Enum, Trait, Type, Function
       const isExported = isRustExported(node);
 
-      const addRustSymbol = (name: string, type: SymbolEntry['type'], startNode: Parser.SyntaxNode) => {
+      const addRustSymbol = (name: string, type: SymbolEntry['type'], startNode: Parser.SyntaxNode, signature?: string) => {
         const item: SymbolEntry = {
           name,
           type,
           location: formatLocation(startNode.startPosition.row + 1, startNode.endPosition.row + 1)
         };
+        if (signature) {
+          item.signature = signature;
+        }
         const doc = getRustDocstring(startNode);
         if (doc) {
           item.doc = doc;
@@ -129,7 +114,25 @@ export class RustParser implements LanguageParser {
             parent = parent.parent;
           }
           const symType = isMethod ? 'method' : 'function';
-          addRustSymbol(nameNode.text, symType, node);
+          
+          let signature: string | undefined;
+          if (options?.includeSignatures) {
+            const params = node.children.find(c => c.type === 'parameters');
+            if (params) {
+              const paramIndex = node.children.indexOf(params);
+              const blockIndex = node.children.findIndex(c => c.type === 'block');
+              let returnType = '';
+              if (paramIndex !== -1 && blockIndex !== -1 && blockIndex > paramIndex + 1) {
+                returnType = node.children
+                  .slice(paramIndex + 1, blockIndex)
+                  .map(c => c.text)
+                  .join(' ')
+                  .trim();
+              }
+              signature = params.text + (returnType ? ' ' + returnType : '');
+            }
+          }
+          addRustSymbol(nameNode.text, symType, node, signature);
         }
       }
 

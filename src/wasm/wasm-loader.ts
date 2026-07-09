@@ -49,7 +49,7 @@ export async function getWasmPath(language: string): Promise<string> {
   }
 
   // 3. Try user's home directory cache
-  const cacheDir = path.resolve(os.homedir(), '.codemap', 'grammars');
+  const cacheDir = path.resolve(os.homedir(), '.code-survey', 'grammars');
   const cachePath = path.resolve(cacheDir, fileName);
 
   if (fs.existsSync(cachePath)) {

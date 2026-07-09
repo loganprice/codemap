@@ -1,8 +1,8 @@
-# Codemap
+# Code Survey
 
-**Codemap** is a deterministic codebase mapping tool designed to summarize repository structures for AI coding agents. It scans the files in your project, parses their ASTs using Tree-sitter to extract imports, exports, and symbols, and maps their interdependencies. 
+**Code Survey** is a deterministic codebase surveying tool designed to summarize repository structures for AI coding agents. It scans the files in your project, parses their ASTs using Tree-sitter to extract imports, exports, and symbols, and maps their interdependencies. 
 
-By default, Codemap generates a token-optimized representation of the codebase, ensuring that your agent receives the necessary architectural context without wasting context window space on redundant syntactic overhead or internal local variables.
+By default, Code Survey generates a token-optimized representation of the codebase, ensuring that your agent receives the necessary architectural context without wasting context window space on redundant syntactic overhead or internal local variables.
 
 ---
 
@@ -21,7 +21,7 @@ By default, Codemap generates a token-optimized representation of the codebase, 
 ## Installation
 
 ```bash
-npm install @lprice/codemap
+npm install @loganprice/code-survey
 ```
 
 *Note: Requires Node.js or Deno installed on the system.*
@@ -30,10 +30,10 @@ npm install @lprice/codemap
 
 ## CLI Usage
 
-Run `codemap` from the terminal:
+Run `code-survey` from the terminal:
 
 ```bash
-codemap [options]
+code-survey [options]
 ```
 
 ### Options
@@ -41,15 +41,20 @@ codemap [options]
 | Option | Alias | Description |
 | :--- | :--- | :--- |
 | `--root <dir>` | `-r` | The root directory of the codebase to map (default: current directory). |
-| `--output <file>` | `-o` | The output path for the mapped artifact (default: `<root>/codemap.json`). |
+| `--output <file>` | `-o` | The output path for the mapped artifact (default: `<root>/code-survey.json`). |
+| `--config <file>` | `-c` | Path to a configuration file containing survey option profiles (JSON or YAML). |
 | `--exclude <list>` | `-e` | Comma-separated list of additional file/folder patterns to exclude. |
 | `--format <type>` | `-f` | Output format: `json`, `yaml`, `markdown`, or `mermaid` (default: inferred from output path). |
 | `--internal-vars` | | Include internal/local variables in the mapping (default: `false`). |
 | `--include-docs` | | Extract docstring/JSDoc summaries for class/function symbols (default: `false`). |
+| `--include-signatures` | | Extract function/method parameters and return types (default: `false`). |
 | `--include-toc`  | | Generate a Table of Contents and navigation links in Markdown format (default: `false`). |
+| `--split`        | | Split output into multiple modular files (default: `false`). If enabled, `--output` is treated as a directory. |
 | `--max-depth <n>` | | Maximum directory traversal depth (default: unlimited). |
 | `--symbols-filter <list>`| | Comma-separated list of symbol types to keep (e.g. `class,method`) (default: all). |
 | `--diff <target>` | | Generate map only for files changed since `<target>` (e.g. `main` or `HEAD`). |
+| `--watch` | `-w` | Watch for file changes and automatically regenerate surveys (default: `false`). |
+| `--mcp` | | Run the built-in MCP (Model Context Protocol) stdio server (default: `false`). |
 | `--help` | `-h` | Show CLI help message. |
 
 ---
@@ -64,7 +69,7 @@ Depending on the task, you can mix and match output formats and options. Below i
 * **Recommended Options:** `--format markdown --include-toc`
 * **CLI Example:**
   ```bash
-  codemap -f markdown --include-toc -o codemap.md
+  code-survey -f markdown --include-toc -o code-survey.md
   ```
 * **Why it works:** The custom Markdown format strips away structural JSON syntax (braces, quotes, commas), resulting in the lowest baseline token footprint (~2k tokens). Adding `--include-toc` generates a clickable table of contents and "Back to Top" links, allowing the agent to navigate modular files directly using markdown anchor targets.
 
@@ -74,7 +79,7 @@ Depending on the task, you can mix and match output formats and options. Below i
 * **Recommended Options:** `--format yaml --internal-vars --include-docs`
 * **CLI Example:**
   ```bash
-  codemap -f yaml --internal-vars --include-docs -o codemap.yaml
+  code-survey -f yaml --internal-vars --include-docs -o code-survey.yaml
   ```
 * **Why it works:** YAML is machine-parsable for the agent while remaining 36% smaller than JSON. Toggling `--internal-vars` maps block-scoped local variables, and `--include-docs` injects comments so the agent understands implementation context.
 
@@ -84,7 +89,7 @@ Depending on the task, you can mix and match output formats and options. Below i
 * **Recommended Options:** `--diff main --format markdown` (or `--diff HEAD`)
 * **CLI Example:**
   ```bash
-  codemap --diff main -f markdown -o codemap.md
+  code-survey --diff main -f markdown -o code-survey.md
   ```
 * **Why it works:** This command queries Git and maps only modified or staged files. Instead of a 15 KB map, it creates a targeted map (often under 1 KB), drastically keeping the agent's context window clean.
 
@@ -94,7 +99,7 @@ Depending on the task, you can mix and match output formats and options. Below i
 * **Recommended Options:** `--format mermaid`
 * **CLI Example:**
   ```bash
-  codemap -f mermaid -o codemap.mermaid
+  code-survey -f mermaid -o code-survey.mermaid
   ```
 * **Why it works:** Generates standard Mermaid.js syntax that the agent can read to identify circular imports or module boundaries. It can also be pasted directly into markdown viewers to render visual flowcharts.
 
@@ -104,7 +109,7 @@ Depending on the task, you can mix and match output formats and options. Below i
 * **Recommended Options:** `--max-depth 2 --symbols-filter class,interface --format markdown`
 * **CLI Example:**
   ```bash
-  codemap --max-depth 2 --symbols-filter class,interface -f markdown -o codemap.md
+  code-survey --max-depth 2 --symbols-filter class,interface -f markdown -o code-survey.md
   ```
 * **Why it works:** Restricting `--max-depth 2` stops traversal deep inside folders (like third-party directories or deep utility folders). Limiting `--symbols-filter class,interface` removes functions and methods, mapping out only the top-level architecture skeleton.
 
@@ -112,14 +117,14 @@ Depending on the task, you can mix and match output formats and options. Below i
 
 ## Programmatic Usage
 
-You can also import and run `createCodemap` directly in your TypeScript/JavaScript projects:
+You can also import and run `createCodeSurvey` directly in your TypeScript/JavaScript projects:
 
 ```typescript
-import { createCodemap } from '@lprice/codemap';
+import { createCodeSurvey } from '@loganprice/code-survey';
 
-await createCodemap({
+await createCodeSurvey({
   root: './my-project',
-  output: './my-project/codemap.md',
+  output: './my-project/code-survey.md',
   excludes: ['node_modules', 'dist'],
   format: 'markdown',
   includeInternalVars: false,
@@ -151,3 +156,36 @@ To optimize feeding maps into LLM coding agents, we analyzed the token usage and
 1. **JSON to YAML Conversion:** Saves around **36%** in raw characters.
 2. **Compact Locations (`Ln X-Y`) & Variable Pruning:** By removing internal function variables, we strip away redundant implementation details, cutting size by over **70%**.
 3. **Custom Markdown Format:** Offers the ultimate token density. By stripping away structural syntax (braces, quotes, commas), a Markdown map uses **nearly 7x fewer tokens** than the original JSON output, saving upwards of **20,000 tokens** per LLM call!
+
+---
+
+## MCP Server Integration
+
+`code-survey` includes a built-in Model Context Protocol (MCP) server that conforms to the Model Context Protocol stdio transport specification. This allows coding assistants (such as Claude Desktop) to dynamically query the codebase rather than feeding in large static files.
+
+### Configuration
+
+Add `code-survey` to your Claude Desktop configuration file (typically located at `~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
+
+```json
+{
+  "mcpServers": {
+    "code-survey": {
+      "command": "node",
+      "args": [
+        "--experimental-strip-types",
+        "/absolute/path/to/code-survey/bin/code-survey.ts",
+        "--mcp"
+      ]
+    }
+  }
+}
+```
+
+### Exposed Tools
+
+- `get_codebase_survey`: Generates and returns the complete codebase survey data, including project details, file mappings, dependencies, and syntax symbols.
+- `search_symbols`: Searches for matching symbols (classes, functions, methods, variables, types) across the codebase.
+- `get_file_symbols`: Retrieves parsed symbol structure, imports, and exports for a specific file relative to the codebase root.
+- `get_dependencies`: Retrieves project-level external/npm and package dependencies.
+

@@ -1,0 +1,36 @@
+{
+  "surveys": [
+    {
+      "output": "examples/code-survey.json",
+      "format": "json",
+      "includeSignatures": true
+    },
+    {
+      "output": "examples/code-survey.yaml",
+      "format": "yaml",
+      "includeSignatures": true
+    },
+    {
+      "output": "examples/code-survey.md",
+      "format": "markdown",
+      "includeSignatures": true,
+      "includeToc": true
+    },
+    {
+      "output": "examples/code-survey.mermaid",
+      "format": "mermaid"
+    },
+    {
+      "output": "examples/survey-split-json",
+      "format": "json",
+      "includeSignatures": true,
+      "split": true
+    },
+    {
+      "output": "examples/survey-split-md",
+      "format": "markdown",
+      "includeSignatures": true,
+      "split": true
+    }
+  ]
+}

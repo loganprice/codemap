@@ -1,11 +1,11 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert';
 import { generateDeterministicJson, generateDeterministicYaml, generateDeterministicMarkdown, generateDeterministicMermaid } from '../src/writer.ts';
-import type { CodemapSchema } from '../src/types.ts';
+import type { CodeSurveySchema } from '../src/types.ts';
 import { parse } from 'yaml';
 
 test('Writer - output is deterministic, sorted, and matches schema keys', () => {
-  const unsortedData: CodemapSchema = {
+  const unsortedData: CodeSurveySchema = {
     version: '1.0.0',
     project: {
       name: 'test-project',
@@ -84,7 +84,7 @@ test('Writer - output is deterministic, sorted, and matches schema keys', () => 
 });
 
 test('Writer - YAML output is deterministic, sorted, and parsed correctly', () => {
-  const unsortedData: CodemapSchema = {
+  const unsortedData: CodeSurveySchema = {
     version: '1.0.0',
     project: {
       name: 'test-project',
@@ -161,7 +161,7 @@ test('Writer - YAML output is deterministic, sorted, and parsed correctly', () =
 });
 
 test('Writer - Markdown output is deterministic', () => {
-  const unsortedData: CodemapSchema = {
+  const unsortedData: CodeSurveySchema = {
     version: '1.0.0',
     project: {
       name: 'test-project',
@@ -218,7 +218,7 @@ test('Writer - Markdown output is deterministic', () => {
 });
 
 test('Writer - Mermaid output is deterministic and formatted correctly', () => {
-  const unsortedData: CodemapSchema = {
+  const unsortedData: CodeSurveySchema = {
     version: '1.0.0',
     project: {
       name: 'test-project',
@@ -259,7 +259,7 @@ test('Writer - Mermaid output is deterministic and formatted correctly', () => {
 });
 
 test('Writer - Markdown output can include Table of Contents and navigation', () => {
-  const unsortedData: CodemapSchema = {
+  const unsortedData: CodeSurveySchema = {
     version: '1.0.0',
     project: {
       name: 'test-project',

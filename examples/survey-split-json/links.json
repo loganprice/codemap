@@ -1,0 +1,195 @@
+{
+  "externalImports": {
+    "web-tree-sitter": [
+      "src/parsers/csharp.ts",
+      "src/parsers/go.ts",
+      "src/parsers/java.ts",
+      "src/parsers/javascript.ts",
+      "src/parsers/python.ts",
+      "src/parsers/rust.ts",
+      "src/parsers/typescript.ts"
+    ],
+    "yaml": [
+      "src/writer.ts",
+      "tests/integration.test.ts",
+      "tests/writer.test.ts"
+    ]
+  },
+  "internalLinks": {
+    "src/index.ts:createCodeSurvey": [
+      "tests/integration.test.ts",
+      "tests/remote.test.ts"
+    ],
+    "src/parser.ts:CodebaseParser": [
+      "src/index.ts"
+    ],
+    "src/parser.ts:parsePackageDependencies": [
+      "src/index.ts",
+      "tests/package-parser.test.ts"
+    ],
+    "src/parsers/csharp.ts:CSharpParser": [
+      "src/parser.ts",
+      "tests/parsers.test.ts"
+    ],
+    "src/parsers/go.ts:GoParser": [
+      "src/parser.ts",
+      "tests/parsers.test.ts"
+    ],
+    "src/parsers/java.ts:JavaParser": [
+      "src/parser.ts",
+      "tests/parsers.test.ts"
+    ],
+    "src/parsers/javascript.ts:JavaScriptParser": [
+      "src/parser.ts",
+      "tests/parsers.test.ts"
+    ],
+    "src/parsers/python.ts:PythonParser": [
+      "src/parser.ts",
+      "tests/parsers.test.ts"
+    ],
+    "src/parsers/rust.ts:RustParser": [
+      "src/parser.ts",
+      "tests/parsers.test.ts"
+    ],
+    "src/parsers/typescript.ts:TypeScriptParser": [
+      "src/parser.ts",
+      "tests/parsers.test.ts"
+    ],
+    "src/resolver.ts:resolveImports": [
+      "src/index.ts",
+      "tests/resolver.test.ts"
+    ],
+    "src/scanner.ts:scanDirectory": [
+      "src/index.ts",
+      "tests/scanner.test.ts"
+    ],
+    "src/types.ts:CodeSurveyResult": [
+      "src/index.ts"
+    ],
+    "src/types.ts:CodeSurveySchema": [
+      "src/index.ts",
+      "src/writer.ts",
+      "tests/writer.test.ts"
+    ],
+    "src/types.ts:FileEntry": [
+      "src/index.ts",
+      "src/resolver.ts",
+      "src/writer.ts",
+      "tests/resolver.test.ts"
+    ],
+    "src/types.ts:ImportEntry": [
+      "src/parsers/csharp.ts",
+      "src/parsers/go.ts",
+      "src/parsers/java.ts",
+      "src/parsers/javascript.ts",
+      "src/parsers/python.ts",
+      "src/parsers/rust.ts",
+      "src/parsers/typescript.ts"
+    ],
+    "src/types.ts:LanguageParser": [
+      "src/parser.ts",
+      "src/parsers/csharp.ts",
+      "src/parsers/go.ts",
+      "src/parsers/java.ts",
+      "src/parsers/javascript.ts",
+      "src/parsers/python.ts",
+      "src/parsers/rust.ts",
+      "src/parsers/typescript.ts"
+    ],
+    "src/types.ts:NamespaceEntry": [
+      "src/index.ts",
+      "src/resolver.ts",
+      "src/writer.ts",
+      "tests/resolver.test.ts"
+    ],
+    "src/types.ts:PackageDependencies": [
+      "src/parser.ts",
+      "src/resolver.ts",
+      "tests/resolver.test.ts"
+    ],
+    "src/types.ts:ParseOptions": [
+      "src/parser.ts",
+      "src/parsers/csharp.ts",
+      "src/parsers/go.ts",
+      "src/parsers/java.ts",
+      "src/parsers/javascript.ts",
+      "src/parsers/python.ts",
+      "src/parsers/rust.ts",
+      "src/parsers/typescript.ts"
+    ],
+    "src/types.ts:ParseResult": [
+      "src/parser.ts",
+      "src/parsers/csharp.ts",
+      "src/parsers/go.ts",
+      "src/parsers/java.ts",
+      "src/parsers/javascript.ts",
+      "src/parsers/python.ts",
+      "src/parsers/rust.ts",
+      "src/parsers/typescript.ts"
+    ],
+    "src/types.ts:SymbolEntry": [
+      "src/index.ts",
+      "src/parsers/csharp.ts",
+      "src/parsers/go.ts",
+      "src/parsers/java.ts",
+      "src/parsers/javascript.ts",
+      "src/parsers/python.ts",
+      "src/parsers/rust.ts",
+      "src/parsers/typescript.ts"
+    ],
+    "src/types.ts:formatDocstring": [
+      "src/parsers/csharp.ts",
+      "src/parsers/go.ts",
+      "src/parsers/java.ts",
+      "src/parsers/javascript.ts",
+      "src/parsers/python.ts",
+      "src/parsers/rust.ts",
+      "src/parsers/typescript.ts"
+    ],
+    "src/types.ts:formatLocation": [
+      "src/parsers/csharp.ts",
+      "src/parsers/go.ts",
+      "src/parsers/java.ts",
+      "src/parsers/javascript.ts",
+      "src/parsers/python.ts",
+      "src/parsers/rust.ts",
+      "src/parsers/typescript.ts"
+    ],
+    "src/utils/wasm-loader.ts:getWasmPath": [
+      "src/parser.ts",
+      "tests/parsers.test.ts",
+      "tests/wasm-loader.test.ts"
+    ],
+    "src/writer.ts:generateDependenciesMarkdown": [
+      "src/index.ts"
+    ],
+    "src/writer.ts:generateDeterministicJson": [
+      "src/index.ts",
+      "tests/writer.test.ts"
+    ],
+    "src/writer.ts:generateDeterministicMarkdown": [
+      "src/index.ts",
+      "tests/writer.test.ts"
+    ],
+    "src/writer.ts:generateDeterministicMermaid": [
+      "src/index.ts",
+      "tests/writer.test.ts"
+    ],
+    "src/writer.ts:generateDeterministicYaml": [
+      "src/index.ts",
+      "tests/writer.test.ts"
+    ],
+    "src/writer.ts:generateFilesMarkdown": [
+      "src/index.ts"
+    ],
+    "src/writer.ts:generateLinksMarkdown": [
+      "src/index.ts"
+    ],
+    "src/writer.ts:generateNamespacesMarkdown": [
+      "src/index.ts"
+    ],
+    "src/writer.ts:generateProjectMarkdown": [
+      "src/index.ts"
+    ]
+  }
+}
