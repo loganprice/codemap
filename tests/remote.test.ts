@@ -18,14 +18,14 @@ test('Remote - clone and map remote repository', async () => {
     const result = await createCodeSurvey({
       root: process.cwd(), // Will be overridden by remote
       output: outputPath,
-      remote: 'https://github.com/loganprice/codemap.git'
+      remote: 'https://github.com/loganprice/code-survey.git'
     });
 
     assert.ok(result.filesCount > 0, 'Should have scanned files from the remote repository');
     assert.ok(fs.existsSync(outputPath), 'Output file should have been written');
 
     const content = JSON.parse(fs.readFileSync(outputPath, 'utf-8'));
-    assert.strictEqual(content.project.name, 'codemap');
+    assert.strictEqual(content.project.name, 'code-survey');
     assert.ok(content.files['src/index.ts'], 'Should have mapped src/index.ts');
   } finally {
     // Clean up local temp output directory
